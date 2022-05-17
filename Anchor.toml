@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-tiktok_clone = "2H3XMEj6DVoVJoEXU8qYugAgZb5SYHtoFnCjcZ8bU7mJ"
+tiktok_clone = "9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1"
 
 [registry]
 url = "https://anchor.projectserum.com"
