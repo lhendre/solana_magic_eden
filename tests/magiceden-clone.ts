@@ -4,9 +4,9 @@ import { MetaplexAnchorNft } from '../target/types/metaplex_anchor_nft'
 import { TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, createInitializeMintInstruction, MINT_SIZE } from '@solana/spl-token' // IGNORE THESE ERRORS IF ANY
 const { SystemProgram } = anchor.web3
 
-describe('metaplex-anchor-nft', () => {
+describe('magic_eden', () => {
   // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.local();
+  const provider = anchor.AnchorProvider.env();
   const wallet = provider.wallet as Wallet;
   anchor.setProvider(provider);
   const program = anchor.workspace.MetaplexAnchorNft as Program<MetaplexAnchorNft>

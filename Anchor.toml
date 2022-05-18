@@ -1,15 +1,14 @@
 [features]
 seeds = false
 [programs.localnet]
-tiktok_clone = "9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1"
+magiceden_clone = "9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-#cluster = "devnet"
-cluster = "localnet"
-
+#cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

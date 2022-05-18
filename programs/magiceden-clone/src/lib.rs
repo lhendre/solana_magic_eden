@@ -8,7 +8,7 @@ use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_
 declare_id!("9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1");
 
 #[program]
-pub mod metaplex_anchor_nft {
+pub mod magiceden_clone {
     use super::*;
 
     pub fn nft_factory(
