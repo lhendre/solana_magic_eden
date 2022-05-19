@@ -1,7 +1,9 @@
 import * as anchor from '@project-serum/anchor'
 import { Program, Wallet } from '@project-serum/anchor'
 import { MetaplexAnchorNft } from '../target/types/metaplex_anchor_nft'
-import { TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, createInitializeMintInstruction, MINT_SIZE } from '@solana/spl-token' // IGNORE THESE ERRORS IF ANY
+import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+
+import { TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, createInitializeMintInstruction, getOrCreateAssociatedTokenAccount, MINT_SIZE, transfer } from '@solana/spl-token' // IGNORE THESE ERRORS IF ANY
 const { SystemProgram } = anchor.web3
 
 describe('magic_eden', () => {
@@ -11,7 +13,7 @@ describe('magic_eden', () => {
   anchor.setProvider(provider);
   const program = anchor.workspace.MetaplexAnchorNft as Program<MetaplexAnchorNft>
 
-  it("Is initialized!", async () => {
+  it("Create", async () => {
     // Add your test here.
 
     const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
