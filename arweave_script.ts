@@ -7,8 +7,9 @@ import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import { PublicKey } from '@solana/web3.js';
 
 export class nftFactory {
-// 'image/png'
- public async areweaveUpload(pathToFile:string, fileType:string){
+
+//Takes in the path to the file and file type, returns async the metadata including the url to the uploaded file from arweave
+ public async areweaveUpload(pathToFile:string){
 
     const arweave = Arweave.init({
         host: 'arweave.net',
@@ -18,22 +19,22 @@ export class nftFactory {
         logging: false,
     });
 
-    // Upload image to Arweave
+    // read file data
     const data = fs.readFileSync(pathToFile);
-
+    //Create transaction object
     const transaction = await arweave.createTransaction({
         data: data
     });
-
+    //set content type to image, can upload different type of files
     transaction.addTag('Content-Type', 'image/png');
-
+    //need to include wallet information in wallet.json
     const wallet = await arweave.wallets.getWalletFromFile('wallet.json');
     await arweave.transactions.sign(transaction, wallet);
-
+    //send transaction
     const response = await arweave.transactions.post(transaction);
     console.log(response);
 
-    const { id } = response; 
+    const { id } = response;
     const imageUrl = id ? `https://arweave.net/${id}` : undefined;
 
     // Upload metadata to Arweave
@@ -87,15 +88,18 @@ export class nftFactory {
     return await arweave.transactions.post(metadataTransaction);
 };
 
+//Mints NFT from arweave data, arweaveString is the URL
 public async mintNFT(arweaveString:string){
+  //establishes connection to devnet
   const connection = new Connection(
     clusterApiUrl('devnet'),
     'confirmed',
   );
+  //generate keypair setup air drop, confirm airdrop transaction
   const keypair = Keypair.generate();  //your own keypair
   const feePayerAirdropSignature = await connection.requestAirdrop(keypair.publicKey, LAMPORTS_PER_SOL);
   await connection.confirmTransaction(feePayerAirdropSignature);
-
+  //create nft
   const mintNFTResponse = await actions.mintNFT({
     connection,
     wallet: new NodeWallet(keypair),
@@ -107,7 +111,7 @@ public async mintNFT(arweaveString:string){
   return mintNFTResponse;
 
 };
-
+//get metadata
 public async getMetaData(tokenMint:string){
   const connection = new Connection('mainnet-beta');
   const tokenMint = tokenMint;
@@ -132,11 +136,14 @@ public async getMetaData(tokenMint:string){
   */
 
 }
-
-public async sendToken(tokenMint:string, destination:string, tokenMint:string, keypairOwner, keyPairDest){
-  const connection = new Connection('mainnet-beta');
+//send token
+public async sendToken(tokenMint:string, keypairOwner, keyPairDest){
+  const connection = new Connection(
+    clusterApiUrl('devnet'),
+    'confirmed',
+  );//mint for token
   const tokenMint = tokenMint;
-
+  //send token
   const mintNFTResponse = await actions.sendToken({
     amount:1,
     connection,
