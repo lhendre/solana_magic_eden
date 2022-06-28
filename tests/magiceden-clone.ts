@@ -1,7 +1,8 @@
 import * as anchor from '@project-serum/anchor'
 import { Program, Wallet } from '@project-serum/anchor'
-import { MetaplexAnchorNft } from '../target/types/metaplex_anchor_nft'
+import { MagicedenClone } from '../target/types/metaplex_anchor_nft'
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+let instructions: TransactionInstruction[];
 
 import { TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, createInitializeMintInstruction, getOrCreateAssociatedTokenAccount, MINT_SIZE, transfer } from '@solana/spl-token' // IGNORE THESE ERRORS IF ANY
 const { SystemProgram } = anchor.web3
@@ -11,10 +12,12 @@ describe('magic_eden', () => {
   const provider = anchor.AnchorProvider.env();
   const wallet = provider.wallet as Wallet;
   anchor.setProvider(provider);
-  const program = anchor.workspace.MetaplexAnchorNft as Program<MetaplexAnchorNft>
+  const program = anchor.workspace.MagicedenClone as Program<MagicedenClone>
 
   it("Create", async () => {
     // Add your test here.
+
+    let url = "https://arweave.net/y5e5DJsiwH0s_ayfMwYk-SnrZtVZzHLQDSTZ5dNRUHA";
 
     const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
       "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -59,7 +62,15 @@ describe('magic_eden', () => {
       mintKey.publicKey,
       wallet.publicKey
     );
+
+    const reciever = anchor.web3.Keypair.generate();
+
+    const NftTokenAccountReciever = await getAssociatedTokenAddress(
+      mintKey.publicKey,
+      reciever.publicKey
+    );
     console.log("NFT Account: ", NftTokenAccount.toBase58());
+    console.log("NFT Account End ");
 
     const mint_tx = new anchor.web3.Transaction().add(
       anchor.web3.SystemProgram.createAccount({
@@ -80,6 +91,12 @@ describe('magic_eden', () => {
         NftTokenAccount,
         wallet.publicKey,
         mintKey.publicKey
+      ),
+      createAssociatedTokenAccountInstruction(
+        wallet.publicKey,
+        NftTokenAccountReciever,
+        reciever.publicKey,
+        mintKey.publicKey
       )
     );
 
@@ -98,9 +115,9 @@ describe('magic_eden', () => {
     console.log("Metadata address: ", metadataAddress.toBase58());
     console.log("MasterEdition: ", masterEdition.toBase58());
 
-    const tx = await program.methods.nftFactory(
+    const txCreate= await program.methods.nftFactory(
       mintKey.publicKey,
-      "https://arweave.net/y5e5DJsiwH0s_ayfMwYk-SnrZtVZzHLQDSTZ5dNRUHA",
+      url,
       "NFT Title",
     )
       .accounts({
@@ -117,6 +134,27 @@ describe('magic_eden', () => {
       },
       )
       .rpc();
-    console.log("Your transaction signature", tx);
+      console.log("Your transaction signature", txCreate);
+
+      console.log("DATA", NftTokenAccount,TOKEN_PROGRAM_ID);
+      console.log("DATA2", wallet,reciever);
+      console.log("DATA3", mintKey,SystemProgram.programId);
+
+      console.log("NFT Account Reciever: ", NftTokenAccountReciever.toBase58());
+
+
+      const txTrade = await program.methods.transferTokens()
+        .accounts({
+          sender:  wallet.publicKey,
+          senderTokens: NftTokenAccount,
+          recipientTokens: NftTokenAccountReciever,
+          mint:mintKey.publicKey,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID
+        },
+        )
+        .rpc();
+
+    console.log("Your second transaction signature", txTrade);
   });
 });

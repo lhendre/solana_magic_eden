@@ -1,7 +1,8 @@
 [features]
 seeds = false
 [programs.localnet]
-magiceden_clone = "9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1"
+# magiceden_clone = "9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1"
+magiceden_clone = "EQjFZhUop5GX4uy7nSbGtEc3NZZxyKbDh42hnza68pF"
 
 [registry]
 url = "https://anchor.projectserum.com"

@@ -1,11 +1,11 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_spl::token;
-use anchor_spl::token::{MintTo, Token};
+use anchor_spl::token::{MintTo, Token, Transfer, transfer};
 use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_accounts_v2};
 
 //To Add In
-declare_id!("9xyZ6LiwBCY4vfbeGqvso2sg8ohqczoDNhq7R2u3SoN1");
+declare_id!("EQjFZhUop5GX4uy7nSbGtEc3NZZxyKbDh42hnza68pF");
 
 #[program]
 pub mod magiceden_clone {
@@ -105,6 +105,28 @@ pub mod magiceden_clone {
 
         Ok(())
     }
+    pub fn transfer_tokens(ctx: Context<TransferTokens>) -> Result<()> {
+        msg!("Initializing Transfer");
+
+        let sender = &ctx.accounts.sender;
+        let sender_tokens = &ctx.accounts.sender_tokens;
+        let recipient_tokens = &ctx.accounts.recipient_tokens;
+        let token_program = &ctx.accounts.token_program;
+
+        transfer(
+            CpiContext::new(
+                token_program.to_account_info(),
+                Transfer {
+                    from: sender_tokens.to_account_info(),
+                    to: recipient_tokens.to_account_info(),
+                    authority: sender.to_account_info(),
+                },
+            ),
+            1,
+        )?;
+
+        return Ok(());
+    }
 }
 
 #[derive(Accounts)]
@@ -134,4 +156,21 @@ pub struct NFTFactory<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub master_edition: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
+pub struct TransferTokens<'info> {
+    #[account(mut)]
+    pub sender: Signer<'info>,
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub sender_tokens: UncheckedAccount<'info>,
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub recipient_tokens: UncheckedAccount<'info>,
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub mint: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
 }
