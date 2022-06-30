@@ -69,9 +69,6 @@ describe('magic_eden', () => {
       mintKey.publicKey,
       reciever.publicKey
     );
-    console.log("NFT Account: ", NftTokenAccount.toBase58());
-    console.log("NFT Account End ");
-
     const mint_tx = new anchor.web3.Transaction().add(
       anchor.web3.SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
@@ -135,10 +132,6 @@ describe('magic_eden', () => {
       )
       .rpc();
       console.log("Your transaction signature", txCreate);
-
-      console.log("DATA", NftTokenAccount,TOKEN_PROGRAM_ID);
-      console.log("DATA2", wallet,reciever);
-      console.log("DATA3", mintKey,SystemProgram.programId);
 
       console.log("NFT Account Reciever: ", NftTokenAccountReciever.toBase58());
 

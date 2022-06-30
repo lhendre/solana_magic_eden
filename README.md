@@ -1,4 +1,5 @@
 //Sample solana contract by Lucas Hendren
+
 This integration doesnt require smart contracts.  It is a series of built in solana apis that utilize on chain function to create, mint and send an nft.
 There is an example NFT Smart Contract in the magiceden-clone program but it is merely an example and not used
 To utilize this you will complete the following steps.
